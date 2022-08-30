@@ -6,6 +6,30 @@ __pycache__/
 # C extensions
 *.so
 
+# training files
+*.h5
+*.pth
+
+# dataset
+*.shp
+*.prj
+*.cpg
+*.sbx
+*.dbf
+*.sbn
+*.shx
+*.xml
+*.json
+*.geojson
+*.tif
+*.zip
+*.tif.ovr
+*.ovr
+*.lock
+*.tfw
+*.clr
+
+
 # Distribution / packaging
 .Python
 build/
