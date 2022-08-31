@@ -11,7 +11,6 @@ import arcpy
 import pandas as pd
 from shapely.geometry import shape
 from pathlib import Path
-import numpy as np
 
 # Inputs
 #

@@ -3,7 +3,6 @@ import arcpy
 import rasterio
 import geopandas as gpd
 from itertools import product
-import shutil
 import os
 from pathlib import Path
 import shapely
@@ -30,7 +29,6 @@ def get_tile_geom(tile_tif):
     return geometry
 
 
-
 # Input parameters
 # data_dir = arcpy.GetParameterAsText(0)
 # geo_data = arcpy.GetParameterAsText(1)
@@ -38,7 +36,7 @@ def get_tile_geom(tile_tif):
 
 data_dir = r"C:\\Users\mlv\Documents\projects\ShorelineArmoring_ArcGIS\data"
 geo_data = r"C:\\Users\mlv\Documents\projects\ShorelineArmoring_ArcGIS\data\cusp_2018_selected.shp"
-outputfolder = r"C:\\Users\mlv\Documents\projects\ShorelineArmoring_ArcGIS\crop"
+outputfolder = r"C:\\Users\mlv\Documents\projects\ShorelineArmoring_ArcGIS\crop_temp"
 Path(outputfolder).mkdir(exist_ok=True, parents=True)
 
 N = 256
@@ -78,8 +76,6 @@ for tile in all_tiles:
                 patch_gdf = gdf[gdf.within(patch_geom)]
 
                 if not patch_gdf.empty:
-                    # move all subtiles that are inter-sect with the CUSP data to a separate folder, the imageries in this folder will be used
-                    # to create training/validation data
 
                     patch_path = os.path.join(outputfolder,
                                                 output_filename.format(int(window.col_off), int(window.row_off)))

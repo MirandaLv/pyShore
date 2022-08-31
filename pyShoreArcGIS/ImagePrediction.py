@@ -2,7 +2,6 @@
 import arcpy
 import numpy as np
 import os
-# os.environ['GDAL_DATA'] = 'C:\\Users\mlv\AppData\Local\ESRI\conda\envs\arcgispro-py3-clone\Library\share\gdal'
 from pathlib import Path
 import segmentation_models_pytorch as smp
 import torchvision.transforms as transforms
@@ -34,7 +33,7 @@ arcpy.AddMessage("Processing: {}".format(allfiles))
 model = smp.Unet('resnet18',
                 encoder_weights="imagenet",
                 in_channels=4,
-                classes=4) #activation='softmax'
+                classes=4)
 
 checkpoint = torch.load(model_path, map_location=torch.device('cpu'))
 model.load_state_dict(checkpoint)
@@ -63,7 +62,6 @@ with torch.no_grad():
             image = np.moveaxis(image, (0, 1, 2), (2, 0, 1)).astype('float32')
             dtype = src.read(1).dtype
 
-
         # Update meta to reflect the number of layers
         meta.update(count = 1)
 
@@ -82,8 +80,7 @@ with torch.no_grad():
 
             probs = logits.softmax(dim=1).numpy().argmax(1).squeeze()
 
-            dst.write_band(1, probs.astype(dtype).copy()) # In order to be in the same dtype
-            # dst.update_tags(**tags)
+            dst.write_band(1, probs.astype(dtype).copy())
 
         # Write confidence (update the export file data type)
         meta.update(dtype='float32')
