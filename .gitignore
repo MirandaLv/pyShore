@@ -8,7 +8,6 @@ __pycache__/
 
 # training files
 *.h5
-*.pth
 
 # dataset
 *.shp
