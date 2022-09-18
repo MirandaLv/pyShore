@@ -32,7 +32,7 @@ There are four inputs required to run the toolkit:
 
 ### Requirements for model training
 - torch: 1.12.0
-- CUDA: 11.2
+- cuda: 11.2
 - python: 3.7.10
 
 ### Requirements for ArcGIS prediction
