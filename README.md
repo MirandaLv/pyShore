@@ -23,11 +23,6 @@ There are four inputs required to run the toolkit:
 
 **BufferDist**: a user defined distance to buffer shorelines, the distance from the shoreline that should be extracted from the imagery to serve as the target for classification.
 
-## Script description
-### pyShoreArcGIS
-- ImageCropping.py 
-- ImagePrediction.py
-- ImagePostprocessing.py
 
 
 ### Requirements for model training
