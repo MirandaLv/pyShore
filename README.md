@@ -15,13 +15,13 @@ pyShore is an open source toolkit for mapping shoreline structures with a U-Net 
 ### How to run the toolbox
 There are four inputs required to run the toolkit: 
 
-**ProjectDir** - a working folder in which to save all processing and results data.
+**ProjectDir**: a working folder in which to save all processing and results data.
 
-**ImageDir** - a user defined folder with all source imagery in a georeferenced (geoTiff) format. 
+**ImageDir**: a user defined folder with all source imagery in a georeferenced (geoTiff) format. 
 
-**GeoPath** - a user defined single geometry file (i.e., shapefile) that defines the geographic locations of shoreline within the provided imagery.
+**GeoPath**: a user defined single geometry file (i.e., shapefile) that defines the geographic locations of shoreline within the provided imagery.
 
-**BufferDist** - a user defined distance to buffer shorelines, the distance from the shoreline that should be extracted from the imagery to serve as the target for classification.
+**BufferDist**: a user defined distance to buffer shorelines, the distance from the shoreline that should be extracted from the imagery to serve as the target for classification.
 
 ## Script description
 ### pyShoreArcGIS
@@ -43,4 +43,3 @@ Your ArcGIS Pro environment should have the deep learning framework set up. To s
 You will also need geopandas and rasterio library. Some open-source Python libraries are not automatically installed in ArcGIS Pro - to install geopandas, activate the virtual environment you created from above tutorial and run: 
 $conda install geopandas libtiff=4.0.10
 rasterio can be installed through conda or pip.
-
