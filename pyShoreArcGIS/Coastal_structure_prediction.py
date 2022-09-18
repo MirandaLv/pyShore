@@ -16,6 +16,8 @@ from rasterio import features
 import pandas as pd
 from shapely.geometry import shape
 from rasterstats import zonal_stats
+import glob
+
 
 # Image Cropping
 def get_tiles(ds, width=256, height=256):
@@ -54,6 +56,7 @@ def vectorize_tiff(raster_file):
 
     return df
 
+
 def add_class4_name(x):
     if int(x) == 0:
         name = 'bulkhead'
@@ -69,6 +72,7 @@ def add_class4_name(x):
 
     return name
 
+
 def logits2conf(img):
 
     Xmax = np.amax(img)
@@ -77,6 +81,7 @@ def logits2conf(img):
     newX = (img - Xmin) / (Xmax - Xmin)
 
     return newX
+
 
 def mosaic_list(imglist, outpath):
 
@@ -102,21 +107,18 @@ def mosaic_list(imglist, outpath):
 
 #############################################################
 # Input parameters
-# proj_path = arcpy.GetParameterAsText(0)
-# data_dir = arcpy.GetParameterAsText(1)
-# geo_data = arcpy.GetParameterAsText(2)
-# buffer_unit = int(arcpy.GetParameterAsText(3)) * 0.00001
+proj_path = arcpy.GetParameterAsText(0)
+data_dir = arcpy.GetParameterAsText(1)
+geo_data = arcpy.GetParameterAsText(2)
+buffer_unit = int(arcpy.GetParameterAsText(3))
 
-proj_path = r"C:\\Users\mlv\Documents\projects\ShorelineArmoring_ArcGIS"
-data_dir = r"C:\\Users\mlv\Documents\projects\ShorelineArmoring_ArcGIS\data"
-geo_data = r"C:\\Users\mlv\Documents\projects\ShorelineArmoring_ArcGIS\data\VA_CUSP_selected_wgs84.shp"
-buffer_unit = int(3) * 0.00001
+Path(os.path.join(proj_path, 'outputs')).mkdir(exist_ok=True, parents=True)
 #############################################################
 
 #############################################################
 # Step 1. Image cropping
 #############################################################
-cropfolder_temp = os.path.join(proj_path, 'crop_temp')
+cropfolder_temp = os.path.join(proj_path, 'outputs', 'crop_temp')
 Path(cropfolder_temp).mkdir(exist_ok=True, parents=True)
 
 N = 256
@@ -124,7 +126,7 @@ gdf = gpd.read_file(geo_data)
 
 all_tiles = [os.path.join(data_dir, f) for f in os.listdir(data_dir) if f.endswith('tif')]
 
-cut = False
+cut = True
 while cut:
     cut = False
     for tile in all_tiles:
@@ -172,7 +174,7 @@ image_path = proj_path
 #############################################################
 
 model_path = os.path.join(proj_path, "weights","model.pth")
-predict_temp = os.path.join(proj_path, "predict_temp")
+predict_temp = os.path.join(proj_path, 'outputs', "predict_temp")
 Path(predict_temp).mkdir(exist_ok=True, parents=True)
 
 # get all image patches in cropfolder_temp
@@ -201,7 +203,7 @@ with torch.no_grad():
 
         roi_file = os.path.join(cropfolder_temp, roi)
 
-        output_image = os.path.join(predict_temp,os.path.basename(roi_file).split('.tif')[0] + '_unet.tif')
+        output_image = os.path.join(predict_temp, os.path.basename(roi_file).split('.tif')[0] + '_unet.tif')
         output_conf = os.path.join(predict_temp, os.path.basename(roi_file).split('.tif')[0] + '_unet_conf.tif')
 
         # Read metadata of the initial image
@@ -239,7 +241,7 @@ with torch.no_grad():
 
 #############################################################
 # Create a mosaic confidence layer
-output_path = os.path.join(proj_path, 'mosaic_conf.tif')
+output_path = os.path.join(proj_path, 'outputs', 'mosaic_conf.tif')
 
 allconfs = [os.path.join(predict_temp, f) for f in os.listdir(predict_temp) if f.endswith('conf.tif')]
 mosaic_list(allconfs, output_path)
@@ -250,9 +252,9 @@ mosaic_list(allconfs, output_path)
 # This script is used to burn the coastal line features into the shortline structure detection result
 # to improve the overall accuracy
 # output directory
-shoreline_masks = os.path.join(proj_path, 'predict_class')
+shoreline_masks = os.path.join(proj_path, 'outputs', 'predict_class')
 Path(shoreline_masks).mkdir(exist_ok=True, parents=True)
-predicted_shp = os.path.join(proj_path, 'test_output.geojson')
+predicted_shp = os.path.join(proj_path, 'outputs', 'test_output.shp')
 #############################################################
 
 gdf = gpd.read_file(geo_data)
@@ -273,8 +275,10 @@ for tile_path in model_masks_paths:
 
     # Check the vectors that overlayed with the selected tile
     if not sub_gdf.empty:
-        sub_gdf['geometry'] = sub_gdf['geometry'].buffer(buffer_unit)
 
+        sub_gdf = sub_gdf.to_crs(crs=26918)
+        sub_gdf['geometry'] = sub_gdf['geometry'].buffer(buffer_unit)
+        sub_gdf = sub_gdf.to_crs(crs=4326)
         shape_polys = sub_gdf["geometry"].to_list()
 
         output_filename = os.path.basename(tile_path).split('.')[0] + '_shoreline_mask.tif'
@@ -307,20 +311,30 @@ rdf = gpd.GeoDataFrame(pd.concat(dataframelist, ignore_index=True))
 rdf['class_name'] = rdf['class_value'].apply(lambda x: add_class4_name(x))
 rdf['geometry'] = rdf["geometry"].apply(lambda x: shape(x))
 rdf.set_crs('epsg:4326')
-rdf.to_file(predicted_shp, driver='GeoJSON')
+rdf.to_file(predicted_shp)
 
-#############################################################
+# #############################################################
 # Step 4. Zonal Statistics
 stats = zonal_stats(predicted_shp, output_path, stats=['min', 'max', 'median', 'sum', 'count', 'mean'])
 stats_df = pd.DataFrame(stats)
 poly_df = gpd.read_file(predicted_shp)
 pd = poly_df.join(stats_df)
 
-pd.to_file(os.path.join(proj_path, 'vector_results.shp'))
-os.remove(predicted_shp)
+pd.to_file(os.path.join(proj_path, 'outputs', 'vector_results.shp'))
 
+# #############################################################
+# Delete the temporary shapefiles and temporary folders
+deleteList = glob.glob(predicted_shp.split(".")[0] + "*")
+for filePath in deleteList:
+    try:
+        os.remove(filePath)
+    except:
+        print("Error while deleting file : ", filePath)
 
-
+shutil.rmtree(cropfolder_temp)
+shutil.rmtree(predict_temp)
+shutil.rmtree(shoreline_masks)
+os.remove(output_path)
 
 
 
