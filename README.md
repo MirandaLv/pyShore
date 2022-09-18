@@ -5,10 +5,11 @@ pyShore is an open-source toolkit for mapping shoreline structures with a U-Net 
 ![alt text](images/ArcGIS_flow.jpg)
 
 ### How to add the toolkit to ArcGIS Pro
-1. Clone the pyShore GitHub repository.
+1. Clone the pyShore GitHub repository, or save the pyShoreArcGIS and weights folder in your defined project working directory.
 2. In ArcGIS Pro, turn on Catalog Pane under the "View" tab (section A in chart below).
 3. Go to "Catalog" and add the pyShore toolbox by clicking "Add Toolbox" (section B). 
 4. The "CoastalStructurePrediction" toolkit is added to your environment and ready to use (sections C and D).
+
 
 ![alt text](images/add_pyShore.png)
 
