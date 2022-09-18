@@ -1,12 +1,12 @@
 ## pyShore
 
-pyShore is an open source toolkit for mapping shoreline structures with a U-Net framework pre-trained on high-resolution orthoimagery. The following flowchart outlines the use of this tool in ArcGIS Pro.
+pyShore is an open-source toolkit for mapping shoreline structures with a U-Net framework pre-trained on high-resolution orthoimagery. The following flowchart outlines the use of this tool in ArcGIS Pro:
 
 ![alt text](images/ArcGIS_flow.jpg)
 
 ### How to add the toolkit to ArcGIS Pro
 1. Clone the pyShore GitHub repository.
-2. In ArcGIS Pro, turn on Catalog Pane under the View tab (section A in chart below).
+2. In ArcGIS Pro, turn on Catalog Pane under the "View" tab (section A in chart below).
 3. Go to "Catalog" and add the pyShore toolbox by clicking "Add Toolbox" (section B). 
 4. The "CoastalStructurePrediction" toolkit is added to your environment and ready to use (sections C and D).
 
@@ -40,6 +40,6 @@ ArcGIS Pro 2.3.0
 
 Your ArcGIS Pro environment should have the deep learning framework set up. To set up your environment, please follow: https://pro.arcgis.com/en/pro-app/2.6/tool-reference/image-analyst/pdf/deep_learning_install.pdf
 
-You will also need geopandas and rasterio library. Some open-source Python libraries are not automatically installed in ArcGIS Pro - to install geopandas, activate the virtual environment you created from above tutorial and run:
+You will also need the geopandas and rasterio libraries. Some open-source Python libraries are not automatically installed in ArcGIS Pro. To install geopandas, activate the virtual environment you created from above tutorial and run:
 $conda install geopandas libtiff=4.0.10  
 rasterio can be installed through conda or pip.
