@@ -24,7 +24,7 @@ bands_mean = np.array([98.8948, 98.8902, 98.8835, 98.8795]).astype('float32')
 # # Setting dataset folder and its weights
 # # ********************************************************************************************
 
-dataset_dir = os.path.join(up(up(up(__file__))), 'dataset_evaluation') #, '256_images_lesstrain'
+dataset_dir = os.path.join(up(__file__), 'datasets') #, '256_images_lesstrain'
 
 # # # Pixel-Level class distribution for each dataset
 # """
@@ -71,8 +71,6 @@ dataset_dir = os.path.join(up(up(up(__file__))), 'dataset_evaluation') #, '256_i
 class ShorelineArmoring(Dataset): # Extend PyTorch's Dataset class
 
     def __init__(self, mode = 'train', transform=None, standardization=None, data_name = "Image_after_2010_merged_256", path = dataset_dir):
-        
-        print(path)
               
         if os.path.isdir(os.path.join(path, data_name)):
             
@@ -124,7 +122,6 @@ class ShorelineArmoring(Dataset): # Extend PyTorch's Dataset class
         self.transform = transform
         self.standardization = standardization
         self.length = len(self.y)
-        self.path = data_path
         
     def __len__(self):
 
@@ -145,13 +142,11 @@ class ShorelineArmoring(Dataset): # Extend PyTorch's Dataset class
         
         if self.transform is not None:
             target = np.moveaxis(target, [0, 1, 2], [2, 0, 1])    # CHW to HWC
-            
             stack = np.concatenate([img, target], axis=-1).astype('float32') # In order to rotate-transform both mask and image
-        
             stack = self.transform(stack)
 
-            img = stack[:,:,:-1]
-            target = stack[:,:,-1].long() # Recast target values back to int64 or torch long dtype
+            img = stack[:-1,:,:]
+            target = stack[-1,:,:].long() # Recast target values back to int64 or torch long dtype
         
         if self.standardization is not None:
             img = self.standardization(img)
