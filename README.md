@@ -1,6 +1,6 @@
 ## pyShore
 
-pyShore is an open-source toolkit for mapping shoreline structures with a U-Net framework pre-trained on high-resolution orthoimagery. The following flowchart outlines the use of this tool in ArcGIS Pro:
+pyShore is an open-source toolkit for mapping shoreline structures with a deep learning framework pre-trained on high-resolution orthoimagery. The following flowchart outlines the use of this tool in ArcGIS Pro:
 
 ![alt text](images/ArcGIS_flow.jpg)
 
