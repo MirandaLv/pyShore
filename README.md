@@ -39,5 +39,5 @@ Your ArcGIS Pro environment should have the deep learning framework set up. To s
 You will also need the geopandas and rasterio libraries. Some open-source Python libraries are not automatically installed in ArcGIS Pro. To install geopandas, activate the virtual environment you created from above tutorial and run:
 $conda install geopandas libtiff=4.0.10 rasterio can be installed through conda or pip.
 
-### Please cite: 
+### Citation: 
 Lv Z., Nunez K., Brewer E., Runfola D. pyShore: A deep learning toolkit for shoreline structure mapping with high-resolution orthographic imagery and convolutional neural networks. Computers & Geosciences 171, 105296. doi: https://doi.org/10.1016/j.cageo.2022.105296.
