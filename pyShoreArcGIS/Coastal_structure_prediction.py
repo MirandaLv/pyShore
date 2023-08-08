@@ -156,7 +156,7 @@ while cut:
                         outds.write(inds.read(window=window))
 
                     patch_geom = get_tile_geom(outpath)
-                    patch_gdf = gdf[gdf.within(patch_geom)]
+                    patch_gdf = gdf[gdf.intersects(patch_geom)]
 
                     if not patch_gdf.empty:
 
